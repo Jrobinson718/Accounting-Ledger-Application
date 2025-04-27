@@ -20,9 +20,9 @@ public class FinancialTransactionsApp {
             transactionList.loadTransactions(transactionFile);
             runApp();
         } catch (IOException e) {
-            System.out.println("An unexpected IOException occurred");
+            System.out.println("Error accessing transaction file:" + transactionFile + "\n" + e.getMessage());
         } catch (Exception e){
-            System.out.println("An unexpected error occurred");
+            System.out.println("An unexpected error occurred: " + e.getMessage());
         }
     }
 

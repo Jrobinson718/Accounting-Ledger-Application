@@ -68,7 +68,7 @@ public class TransactionList {
                 bw.newLine();
             }
         } catch (IOException e) {
-            System.out.println("Error saving transactions");
+            System.out.println("Error saving transactions: " + e.getMessage());
         }
     }
 
@@ -81,7 +81,7 @@ public class TransactionList {
                     Transaction transaction = Transaction.parsedTransaction(line);
                     transactions.add(transaction);
                 }catch (IllegalArgumentException e){
-                    System.out.println("Error loading transactions: ");
+                    System.out.println("Error loading transactions: " + e.getMessage());
                 }
             }
         }
