@@ -1,6 +1,7 @@
 package com.pluralsight;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -179,6 +180,64 @@ public class FinancialTransactionsApp {
                 "\n5) Search by Vendor" +
                 "\n0) Back to Ledger page");
         String choice = console.promptForString("Please make a selection (1, 2, 3, 4, 5, 0):");
+
+    }
+
+    private static void displayMonthToDate() throws IOException {
+        // Displays a month to date report
+        // Includes all transactions from the start of the month to the current day
+        LocalDate today = LocalDate.now();
+        LocalDate startOfMonth = today.withDayOfMonth(1);
+        List<Transaction> transactions = transactionList.getTransactions(startOfMonth,today);
+
+        if (transactions.isEmpty()){
+            System.out.println("\nNo transactions to display.");
+            return;
+        }
+
+        double total = transactionList.getTotalTransactions(startOfMonth, today);
+        System.out.println("\nMonth to date report (" + startOfMonth.format(dateFormatter) + " - "
+                + today.format(dateFormatter) + "):");
+        for (Transaction transaction : transactions) {
+            System.out.println(transaction);
+
+        }
+        System.out.printf("Total: $%.2f\n", total);
+    }
+
+    private static void displayPreviousMonth() throws IOException {
+        // Displays all transactions from the previous month
+        LocalDate today = LocalDate.now();
+        LocalDate startOfLastMonth = today.minusMonths(1).withDayOfMonth(1);
+        LocalDate endOfLastMonth = today.minusMonths(1).withDayOfMonth(today.minusMonths(1).lengthOfMonth());
+        List<Transaction> transactions = transactionList.getTransactions(startOfLastMonth, endOfLastMonth);
+
+        if (transactions.isEmpty()){
+            System.out.println("\nNo transactions to display.");
+            return;
+        }
+
+        double total = transactionList.getTotalTransactions(startOfLastMonth, endOfLastMonth);
+        System.out.println("\nPrevious month's report (" + startOfLastMonth.format(dateFormatter)+ " - "
+        + endOfLastMonth.format(dateFormatter));
+        for (Transaction transaction : transactions){
+            System.out.println(transaction);
+        }
+        System.out.printf("Total $%.2f\n", total);
+    }
+
+    private static void displayYearToDate() throws IOException {
+        // Displays a year to date report
+        // Includes all transactions from the start of the year to the current day
+
+    }
+
+    private static void displayPreviousYear() throws IOException {
+
+    }
+
+    private static void searchByVendor() throws IOException {
+        // Allows the user to search for all transactions that come from a specific vendor
 
     }
 }
