@@ -1,6 +1,7 @@
 package com.pluralsight;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class FinancialTransactionsApp {
@@ -53,7 +54,7 @@ public class FinancialTransactionsApp {
 
     private static void displayHomeScreen(){
         // Displays the options the user has when first starting the app
-        System.out.println("\nHome screen:" +
+        System.out.println("\nHome screen:\n" +
                 "\nD) Add Deposit" +
                 "\nP) Make Payment" +
                 "\nL) Ledger" +
@@ -63,6 +64,20 @@ public class FinancialTransactionsApp {
     private static void addTransaction(boolean isDeposit) throws IOException{
         // Methodology for adding a transaction (deposit or payment)
         // Uses a boolean (isDeposit) to ascertain how the deposit should be processed
+        System.out.println("\n" + (isDeposit ? "Add deposit:" : "Make payment:"));
+        LocalDateTime now = LocalDateTime.now();
+        String dateTime = now.format(DtFormatter);
+        String description = console.promptForString("Enter " + (isDeposit ? "deposit" : "payment") + " description: ");
+        String vendor = console.promptForString("Enter vendor: ");
+        double amount = console.promptForFloat("Enter " + (isDeposit ? "deposit" : "payment") + " amount:");
+
+        if (!isDeposit){
+            amount = -Math.abs(amount);
+        }
+        Transaction transaction = new Transaction(now, description, vendor, amount);
+        transactionList.addTransaction(transaction);
+        transactionList.saveTransactions(transactionFile);
+        System.out.println((isDeposit ? "Deposit" : "Payment") + " added successfully.");
     }
 
     private static void displayLedger() throws IOException{
