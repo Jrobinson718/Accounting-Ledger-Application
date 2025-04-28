@@ -34,7 +34,7 @@ public class Transaction {
         return amount;
     }
 
-    //Override toString to get a formatted string for the transaction
+    // Override toString to get a formatted string for the transaction
     @Override
     public String toString() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
