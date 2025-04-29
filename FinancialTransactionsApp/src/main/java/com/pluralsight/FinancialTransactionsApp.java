@@ -34,7 +34,7 @@ public class FinancialTransactionsApp {
         while (true) {
             displayHomeScreen();
             String choice = console.promptForString("Please make a selection (D, P, L, X): ");
-            switch (choice) {
+            switch (choice.toLowerCase()) {
                 case "d":
                     addTransaction(true);
                     break;
@@ -75,6 +75,7 @@ public class FinancialTransactionsApp {
 
         if (!isDeposit) {
             amount = -Math.abs(amount);
+
         }
         Transaction transaction = new Transaction(now, description, vendor, amount);
         transactionList.addTransaction(transaction);
@@ -92,7 +93,7 @@ public class FinancialTransactionsApp {
                     "\nR) Reports - Display reports" +
                     "\nH) Home - Go back to the home page");
             String choice = console.promptForString("Please make a selection (A, D, P, R, H):");
-            switch (choice) {
+            switch (choice.toLowerCase()) {
                 case "a":
                     displayAllTransactions();
                     break;
@@ -120,11 +121,13 @@ public class FinancialTransactionsApp {
         if (transactions.isEmpty()) {
             System.out.println("\nNo transactions to display.");
             return;
+
         }
         System.out.println("\nAll transactions:");
         //Displays newest transactions first by iterating through the list backwards
         for (int i = transactions.size() - 1; i >= 0; i--) {
             System.out.println(transactions.get(i));
+
         }
     }
 
@@ -134,6 +137,7 @@ public class FinancialTransactionsApp {
         if (transactions.isEmpty()) {
             System.out.println("\nNo transactions to display.");
             return;
+
         }
         System.out.println("\nDeposits:\n");
         boolean found = false;
@@ -142,10 +146,12 @@ public class FinancialTransactionsApp {
             if (transaction.getAmount() > 0) {
                 System.out.println(transaction);
                 found = true;
+
             }
         }
         if (!found) {
             System.out.println("\nNo deposits to display.");
+
         }
     }
 
@@ -155,31 +161,59 @@ public class FinancialTransactionsApp {
         if (transactions.isEmpty()) {
             System.out.println("\nNo Transactions to display");
             return;
+
         }
-        System.out.println("Payments:");
+        System.out.println("\nPayments:\n");
         boolean found = false;
         for (int i = transactions.size() - 1; i >= 0; i--) {
             Transaction transaction = transactions.get(i);
             if (transaction.getAmount() < 0) {
                 System.out.println(transaction);
                 found = true;
+
             }
         }
         if (!found) {
             System.out.println("\nNo payments to display.");
+
         }
     }
 
-    private static void displayReports() {
+    private static void displayReports() throws IOException {
         // Display the reports screen and it's options
-        System.out.println("\nReports:" +
-                "\n1) Month To Date" +
-                "\n2) Previous Month" +
-                "\n3) Year To Date" +
-                "\n4) Previous Year" +
-                "\n5) Search by Vendor" +
-                "\n0) Back to Ledger page");
-        String choice = console.promptForString("Please make a selection (1, 2, 3, 4, 5, 0):");
+        while (true){
+            System.out.println("\nReports:" +
+                    "\n1) Month To Date" +
+                    "\n2) Previous Month" +
+                    "\n3) Year To Date" +
+                    "\n4) Previous Year" +
+                    "\n5) Search by Vendor" +
+                    "\n0) Back to Ledger page");
+            String choice = console.promptForString("Please make a selection (1, 2, 3, 4, 5, 0):");
+
+            switch (choice.toLowerCase()){
+                case "1":
+                    displayMonthToDate();
+                    break;
+                case "2":
+                    displayPreviousMonth();
+                    break;
+                case "3":
+                    displayYearToDate();
+                    break;
+                case "4":
+                    displayPreviousYear();
+                    break;
+                case "5":
+                    searchByVendor();
+                    break;
+                case "0":
+                    displayLedger();
+                    break;
+                default:
+                    System.out.println("\nInvalid choice, please try again.");
+            }
+        }
 
     }
 
@@ -188,11 +222,12 @@ public class FinancialTransactionsApp {
         // Includes all transactions from the start of the month to the current day
         LocalDate today = LocalDate.now();
         LocalDate startOfMonth = today.withDayOfMonth(1);
-        List<Transaction> transactions = transactionList.getTransactions(startOfMonth,today);
+        List<Transaction> transactions = transactionList.getTransactions(startOfMonth, today);
 
-        if (transactions.isEmpty()){
+        if (transactions.isEmpty()) {
             System.out.println("\nNo transactions to display.");
             return;
+
         }
 
         double total = transactionList.getTotalTransactions(startOfMonth, today);
@@ -200,6 +235,7 @@ public class FinancialTransactionsApp {
                 + today.format(dateFormatter) + "):");
         for (Transaction transaction : transactions) {
             System.out.println(transaction);
+
 
         }
         System.out.printf("Total: $%.2f\n", total);
@@ -212,16 +248,18 @@ public class FinancialTransactionsApp {
         LocalDate endOfLastMonth = today.minusMonths(1).withDayOfMonth(today.minusMonths(1).lengthOfMonth());
         List<Transaction> transactions = transactionList.getTransactions(startOfLastMonth, endOfLastMonth);
 
-        if (transactions.isEmpty()){
+        if (transactions.isEmpty()) {
             System.out.println("\nNo transactions to display.");
             return;
+
         }
 
         double total = transactionList.getTotalTransactions(startOfLastMonth, endOfLastMonth);
-        System.out.println("\nPrevious month's report (" + startOfLastMonth.format(dateFormatter)+ " - "
-        + endOfLastMonth.format(dateFormatter));
-        for (Transaction transaction : transactions){
+        System.out.println("\nPrevious month's report (" + startOfLastMonth.format(dateFormatter) + " - "
+                + endOfLastMonth.format(dateFormatter));
+        for (Transaction transaction : transactions) {
             System.out.println(transaction);
+
         }
         System.out.printf("Total $%.2f\n", total);
     }
@@ -229,15 +267,59 @@ public class FinancialTransactionsApp {
     private static void displayYearToDate() throws IOException {
         // Displays a year to date report
         // Includes all transactions from the start of the year to the current day
+        LocalDate today = LocalDate.now();
+        LocalDate startOfYear = today.withDayOfYear(1);
+        List<Transaction> transactions = transactionList.getTransactions(startOfYear, today);
 
+        if (transactions.isEmpty()) {
+            System.out.println("\nNo transactions to display.");
+
+        }
+
+        double total = transactionList.getTotalTransactions(startOfYear, today);
+        System.out.println("\nYear to date report (" + startOfYear.format(dateFormatter)
+                + " - " + today.format(dateFormatter) + "):");
+        for (Transaction transaction : transactions) {
+            System.out.println(transaction);
+
+        }
+        System.out.printf("Total: $%.2f\n", total);
     }
 
     private static void displayPreviousYear() throws IOException {
+        // Displays report of the previous year
+        LocalDate today = LocalDate.now();
+        LocalDate startOfPreviousYear = today.minusYears(1).withDayOfYear(1);
+        LocalDate endOfPreviousYear = today.minusYears(1).withDayOfYear(today.minusYears(1).lengthOfYear());
+        List<Transaction> transactions = transactionList.getTransactions(startOfPreviousYear, endOfPreviousYear);
 
+        if (transactions.isEmpty()) {
+            System.out.println("No transactions to display.");
+            return;
+
+        }
+
+        double total = transactionList.getTotalTransactions(startOfPreviousYear, endOfPreviousYear);
+        System.out.println("\nPrevious year report (" + startOfPreviousYear.format(dateFormatter) + " - "
+                + endOfPreviousYear.format(dateFormatter) + "):");
+        for (Transaction transaction : transactions) {
+            System.out.println(transaction);
+        }
+        System.out.printf("Total: $%.2f\n", total);
     }
 
     private static void searchByVendor() throws IOException {
         // Allows the user to search for all transactions that come from a specific vendor
+        String vendor = console.promptForString("Enter vendor name to search: ");
+        List<Transaction> transactions = transactionList.getTransactionsByVendor(vendor);
 
+        if (transactions.isEmpty()) {
+            System.out.println("No transactions found for vendor '" + vendor + "',");
+            return;
+        }
+        System.out.println("\nTransactions for vendor '" + vendor + "'.");
+        for (Transaction transaction : transactions) {
+            System.out.println(transaction);
+        }
     }
 }

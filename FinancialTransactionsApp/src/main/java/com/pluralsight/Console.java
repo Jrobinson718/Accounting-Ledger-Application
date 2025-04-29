@@ -65,7 +65,7 @@ public class Console {
         while (!hasResult) {
             try {
                 System.out.print(prompt);
-                result = scanner.nextLine().toLowerCase().trim();
+                result = scanner.nextLine().trim();
                 hasResult = true;
 
             } catch (Exception e) {
