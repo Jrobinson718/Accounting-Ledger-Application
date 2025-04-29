@@ -41,6 +41,8 @@ public class Transaction {
         return String.format("%s|%s|%s|%.2f", dateTime.format(formatter), description, vendor, amount);
     }
 
+    // Returns a formatted string with fixed-width, aligned columns
+    // Shortens long text to only fit within the limits of the predetermined width
     public String toDisplayString() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String formattedDateTime = dateTime.format(formatter);
@@ -67,20 +69,22 @@ public class Transaction {
             displayVendor = displayVendor.substring(0, vendorWidth);
         }
 
+
         String formattedString = String.format("%%-%ds %%-%ds %%-%ds %%%d.2f",
                 dateTimeWidth, descWidth, vendorWidth, amountWidth);
 
         return String.format(formattedString, formattedDateTime, displayDesc, displayVendor, amount);
     }
 
-    // Method to get a transaction object from a string
+    // Creates a Transaction object by parsing a string delimited by "|"
+    // Used when loading data from the CSV file
     public static Transaction parsedTransaction(String transactionString) {
         String[] parts = transactionString.split("\\|"); // Splits at | delimiter
         if (parts.length != 4) {
             throw new IllegalArgumentException("Invalid transaction string: " + transactionString);
         }
         try {
-            // Parses inputs from a delimited string array into proper transaction format and assigns the variables accordingly
+            // Parses each part into the correct data type
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             LocalDateTime dateTime = LocalDateTime.parse(parts[0], formatter);
             String description = parts[1];

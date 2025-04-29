@@ -4,13 +4,13 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class FinancialTransactionsApp {
 
-    // Creating variables that should remain the same throughout the entirety of the programs runtime.
-    private static final DateTimeFormatter DtFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    // Creating variables that should remain the same throughout the entirety of the programs runtime
     private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private static final String transactionFile = "transactions.csv";
 
@@ -18,9 +18,11 @@ public class FinancialTransactionsApp {
     private static TransactionList transactionList = new TransactionList();
     private static Console console = new Console();
 
+
+    // Application start point
+    // Loads data and starts main loop, also handle errors
     public static void main(String[] args) {
         try {
-            // Main method that loads info from transactions.csv and runs app
             transactionList.loadTransactions(transactionFile);
             runApp();
         } catch (IOException e) {
@@ -30,8 +32,8 @@ public class FinancialTransactionsApp {
         }
     }
 
+    // Method that starts the interactive part of the application. Handles looping
     private static void runApp() throws IOException {
-        // Method that starts the interactive part of the application. Handles looping.
         while (true) {
             displayHomeScreen();
             String choice = console.promptForString("Please make a selection (D, P, L, X): ");
@@ -55,8 +57,8 @@ public class FinancialTransactionsApp {
         }
     }
 
+    // Displays the options the user has when first starting the app
     private static void displayHomeScreen() {
-        // Displays the options the user has when first starting the app
         System.out.println("\nHome screen:\n" +
                 "\nD) Add Deposit" +
                 "\nP) Make Payment" +
@@ -64,30 +66,8 @@ public class FinancialTransactionsApp {
                 "\nX) Exit");
     }
 
-    private static void addTransaction(boolean isDeposit) throws IOException {
-        // Methodology for adding a transaction (deposit or payment)
-        // Uses a boolean (isDeposit) to ascertain how the deposit should be processed
-        System.out.println("\n" + (isDeposit ? "Add deposit:" : "Make payment:"));
-        LocalDateTime now = LocalDateTime.now();
-        String dateTime = now.format(DtFormatter);
-        String description = console.promptForString("Enter " + (isDeposit ? "deposit" : "payment") + " description: ");
-        String vendor = console.promptForString("Enter vendor: ");
-        double amount = console.promptForFloat("Enter " + (isDeposit ? "deposit" : "payment") + " amount:");
-
-        if (!isDeposit) {
-            amount = -Math.abs(amount);
-
-        }else {
-            amount = -Math.abs(amount);
-        }
-        Transaction transaction = new Transaction(now, description, vendor, amount);
-        transactionList.addTransaction(transaction);
-        transactionList.saveTransactions(transactionFile);
-        System.out.println((isDeposit ? "\nDeposit" : "\nPayment") + " added successfully.");
-    }
-
+    // Displays ledger screen and it's possible options
     private static void displayLedger() throws IOException {
-        // Displays ledger screen and it's possible options
         while (true) {
             System.out.println("\nLedger:\n" +
                     "\nA) All - Display entire log" +
@@ -117,46 +97,20 @@ public class FinancialTransactionsApp {
         }
     }
 
-    private static void displayAllTransactions() {
-        // Displays all transactions by iterating through the transactions list
-        // Gets information directly from TransactionList.java
-        List<Transaction> transactions = transactionList.getTransactions();
-        DisplayUtils.printFormattedList(transactions, "All Transactions:");
-
-    }
-
-    private static void displayFilteredTransactions(boolean showDeposits) {
-        List<Transaction> allTransactions = transactionList.getTransactions();
-        List<Transaction> filteredList = new ArrayList<>();
-        String reportTitle = showDeposits ? "Deposits" : "Payments";
-
-        for (Transaction transaction : allTransactions) {
-            if (showDeposits) {
-                if (transaction.getAmount() > 0){
-                    filteredList.add(transaction);
-                }
-            }else {
-                if (transaction.getAmount() < 0) {
-                    filteredList.add(transaction);
-                }
-            }
-        }
-        DisplayUtils.printFormattedList(filteredList, reportTitle);
-    }
-
+    // Display the reports screen and it's options
     private static void displayReports() throws IOException {
-        // Display the reports screen and it's options
-        while (true){
+        while (true) {
             System.out.println("\nReports:" +
                     "\n1) Month To Date" +
                     "\n2) Previous Month" +
                     "\n3) Year To Date" +
                     "\n4) Previous Year" +
                     "\n5) Search by Vendor" +
+                    "\n6) Custom Search" +
                     "\n0) Back to Ledger page");
             String choice = console.promptForString("Please make a selection (1, 2, 3, 4, 5, 0):");
 
-            switch (choice.toLowerCase()){
+            switch (choice.toLowerCase()) {
                 case "1":
                     displayMonthToDate();
                     break;
@@ -172,18 +126,69 @@ public class FinancialTransactionsApp {
                 case "5":
                     searchByVendor();
                     break;
+                case "6":
+                    customSearch();
+                    break;
                 case "0":
                     return;
                 default:
                     System.out.println("\nInvalid choice, please try again.");
             }
         }
+    }
+
+    // Methodology for adding a transaction (deposit or payment)
+    // Uses a boolean (isDeposit) to ascertain how the deposit should be processed
+    private static void addTransaction(boolean isDeposit) throws IOException {
+        System.out.println("\n" + (isDeposit ? "Add deposit:" : "Make payment:"));
+        LocalDateTime now = LocalDateTime.now();
+        String description = console.promptForString("Enter " + (isDeposit ? "deposit" : "payment") + " description: ");
+        String vendor = console.promptForString("Enter vendor: ");
+        double amount = console.promptForFloat("Enter " + (isDeposit ? "deposit" : "payment") + " amount:");
+
+        if (!isDeposit) {
+            amount = -Math.abs(amount);
+
+        } else {
+            amount = -Math.abs(amount);
+        }
+        Transaction transaction = new Transaction(now, description, vendor, amount);
+        transactionList.addTransaction(transaction);
+        transactionList.saveTransactions(transactionFile);
+        System.out.println((isDeposit ? "\nDeposit" : "\nPayment") + " added successfully.");
+    }
+
+    // Displays all transactions by iterating through the transactions list
+    // Gets information directly from TransactionList.java
+    private static void displayAllTransactions() {
+        List<Transaction> transactions = transactionList.getTransactions();
+        DisplayUtils.printFormattedList(transactions, "All Transactions:");
 
     }
 
+    // Displays only deposits or only payments using the formatted list
+    private static void displayFilteredTransactions(boolean showDeposits) {
+        List<Transaction> allTransactions = transactionList.getTransactions();
+        List<Transaction> filteredList = new ArrayList<>();
+        String reportTitle = showDeposits ? "Deposits" : "Payments";
+
+        for (Transaction transaction : allTransactions) {
+            boolean isPositive = transaction.getAmount() > 0;
+            if (showDeposits && isPositive) {
+                filteredList.add(transaction);
+
+            } else if (!showDeposits && !isPositive) {
+                    filteredList.add(transaction);
+            }
+        }
+        DisplayUtils.printFormattedList(filteredList, reportTitle);
+    }
+
+    //   === Report generation methods ===
+
+    // Displays a month to date report
+    // Includes all transactions from the start of the month to the current day
     private static void displayMonthToDate() throws IOException {
-        // Displays a month to date report
-        // Includes all transactions from the start of the month to the current day
         LocalDate today = LocalDate.now();
         LocalDate startOfMonth = today.withDayOfMonth(1);
         List<Transaction> transactions = transactionList.getTransactions(startOfMonth, today);
@@ -197,8 +202,8 @@ public class FinancialTransactionsApp {
         System.out.printf("Total: $%.2f%n", total);
     }
 
+    // Displays all transactions from the previous month
     private static void displayPreviousMonth() throws IOException {
-        // Displays all transactions from the previous month
         LocalDate today = LocalDate.now();
         LocalDate startOfLastMonth = today.minusMonths(1).withDayOfMonth(1);
         LocalDate endOfLastMonth = today.minusMonths(1).withDayOfMonth(today.minusMonths(1).lengthOfMonth());
@@ -212,15 +217,15 @@ public class FinancialTransactionsApp {
         System.out.printf("Total: $%.2f%n", total);
     }
 
+    // Displays a year to date report
+    // Includes all transactions from the start of the year to the current day
     private static void displayYearToDate() throws IOException {
-        // Displays a year to date report
-        // Includes all transactions from the start of the year to the current day
         LocalDate today = LocalDate.now();
         LocalDate startOfYear = today.withDayOfYear(1);
         List<Transaction> transactions = transactionList.getTransactions(startOfYear, today);
         double total = transactionList.getTotalTransactions(startOfYear, today);
 
-        String title ="\nYear to date report (" + startOfYear.format(dateFormatter)
+        String title = "\nYear to date report (" + startOfYear.format(dateFormatter)
                 + " - " + today.format(dateFormatter) + "):";
 
         DisplayUtils.printFormattedList(transactions, title);
@@ -228,8 +233,9 @@ public class FinancialTransactionsApp {
         System.out.printf("Total: $%.2f%n", total);
     }
 
+    // Displays report of the previous year
     private static void displayPreviousYear() throws IOException {
-        // Displays report of the previous year
+
         LocalDate today = LocalDate.now();
         LocalDate startOfPreviousYear = today.minusYears(1).withDayOfYear(1);
         LocalDate endOfPreviousYear = today.minusYears(1).withDayOfYear(today.minusYears(1).lengthOfYear());
@@ -243,6 +249,7 @@ public class FinancialTransactionsApp {
         System.out.printf("Total: $%.2f%n", total);
     }
 
+    // Displays transactions matching a vendor name entered by the user
     private static void searchByVendor() throws IOException {
         // Allows the user to search for all transactions that come from a specific vendor
         String vendor = console.promptForString("\nEnter vendor name to search: ");
@@ -250,5 +257,36 @@ public class FinancialTransactionsApp {
         String title = "Transactions for Vendor '" + vendor + "'";
 
         DisplayUtils.printFormattedList(transactions, title);
+    }
+
+    //   === Custom search methods
+    // Created a helper method that prompts the user for a date (optional) and parses it
+    // Loops until given a valid date or a blank input
+    private static LocalDate parseOptionalDate(String prompt) {
+        while (true) {
+            String input = console.promptForString(prompt);
+            if (input.isBlank()) {
+                return null;
+            }
+            try {
+                return LocalDate.parse(input, dateFormatter);
+            } catch (DateTimeParseException e) {
+                System.out.println("Invalid date format. Please use (yyyy-MM-dd) or leave blank.");
+            }
+        }
+    }
+
+    // Handles the custom search Interface
+    // Prompts the user for optional criteria and displays matching transactions
+    private static void customSearch() throws IOException {
+        System.out.println("\nCustom transaction search (leave blank to ignore a filter):");
+
+        LocalDate startDate = parseOptionalDate("Enter start date (yyyy-MM-dd): ");
+        LocalDate endDate = parseOptionalDate("Ender end date (yyyy-MM-dd): ");
+        String description = console.promptForString("Enter transaction description: ");
+        String vendor = console.promptForString("Enter transaction vendor: ");
+
+        List<Transaction> results = transactionList.searchTransactions(startDate, endDate, description, vendor);
+        DisplayUtils.printFormattedList(results, "Custom search results");
     }
 }

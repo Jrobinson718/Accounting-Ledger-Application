@@ -84,4 +84,45 @@ public class TransactionList {
             }
         }
     }
+
+    public List<Transaction> searchTransactions(LocalDate startDate, LocalDate endDate, String description, String vendor){
+        List<Transaction> results = new ArrayList<>();
+        String lowerDescription = (description != null && !description.isBlank()) ? description.toLowerCase() : null;
+        String lowerVendor = (vendor != null && !vendor.isBlank()) ? vendor.toLowerCase() : null;
+
+        for (Transaction transaction : this.transactions){
+            LocalDate transactionDate = transaction.getDateTime().toLocalDate();
+
+            // Start date filter, skips if transaction is before startDate
+            if (startDate != null && transactionDate.isBefore(startDate)) {
+                continue;
+            }
+
+            // End date filter, skips if transaction is after endDate
+            if (endDate != null && transactionDate.isAfter(endDate)) {
+                continue;
+            }
+
+            // Description filter, skips if description doesn't contain the search term
+            if (lowerDescription != null) {
+                String transactionDesc = transaction.getDescription();
+
+                if (transactionDesc == null || !transactionDesc.toLowerCase().contains(lowerDescription)){
+                    continue;
+                };
+            }
+
+            // Vendor Filter, skips if vendor doesn't contain the search term.
+            if (lowerVendor != null) {
+                String transactionVendor = transaction.getVendor();
+
+                if (transactionVendor == null || !transactionVendor.toLowerCase().contains(lowerVendor)){
+                    continue;
+                }
+            }
+
+            results.add(transaction);
+        }
+        return results;
+    }
 }
