@@ -109,7 +109,7 @@ public class TransactionList {
 
                 if (transactionDesc == null || !transactionDesc.toLowerCase().contains(lowerDescription)){
                     continue;
-                };
+                }
             }
 
             // Vendor Filter, skips if vendor doesn't contain the search term.

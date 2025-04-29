@@ -67,7 +67,7 @@ public class FinancialTransactionsApp {
     }
 
     // Displays ledger screen and it's possible options
-    private static void displayLedger() throws IOException {
+    private static void displayLedger() {
         while (true) {
             System.out.println("\nLedger:\n" +
                     "\nA) All - Display entire log" +
@@ -98,7 +98,7 @@ public class FinancialTransactionsApp {
     }
 
     // Display the reports screen and it's options
-    private static void displayReports() throws IOException {
+    private static void displayReports() {
         while (true) {
             System.out.println("\nReports:" +
                     "\n1) Month To Date" +
@@ -188,7 +188,7 @@ public class FinancialTransactionsApp {
 
     // Displays a month to date report
     // Includes all transactions from the start of the month to the current day
-    private static void displayMonthToDate() throws IOException {
+    private static void displayMonthToDate() {
         LocalDate today = LocalDate.now();
         LocalDate[] range = DateUtils.getMonthToDateRange(today);
         LocalDate startDate = range[0];
@@ -204,7 +204,7 @@ public class FinancialTransactionsApp {
     }
 
     // Displays all transactions from the previous month
-    private static void displayPreviousMonth() throws IOException {
+    private static void displayPreviousMonth() {
         LocalDate today = LocalDate.now();
         LocalDate[] range = DateUtils.getPreviousMonthRange(today);
         LocalDate startDate = range[0];
@@ -222,7 +222,7 @@ public class FinancialTransactionsApp {
 
     // Displays a year to date report
     // Includes all transactions from the start of the year to the current day
-    private static void displayYearToDate() throws IOException {
+    private static void displayYearToDate() {
         LocalDate today = LocalDate.now();
         LocalDate[] range = DateUtils.getYearToDateRange(today);
         LocalDate startDate = range[0];
@@ -239,7 +239,7 @@ public class FinancialTransactionsApp {
     }
 
     // Displays report of the previous year
-    private static void displayPreviousYear() throws IOException {
+    private static void displayPreviousYear() {
 
         LocalDate today = LocalDate.now();
         LocalDate[] range = DateUtils.getPrevYearRange(today);
@@ -257,7 +257,7 @@ public class FinancialTransactionsApp {
     }
 
     // Displays transactions matching a vendor name entered by the user
-    private static void searchByVendor() throws IOException {
+    private static void searchByVendor() {
         // Allows the user to search for all transactions that come from a specific vendor
         String vendor = console.promptForString("\nEnter vendor name to search: ");
         List<Transaction> transactions = transactionList.getTransactionsByVendor(vendor);
@@ -285,7 +285,7 @@ public class FinancialTransactionsApp {
 
     // Handles the custom search Interface
     // Prompts the user for optional criteria and displays matching transactions
-    private static void customSearch() throws IOException {
+    private static void customSearch() {
         System.out.println("\nCustom transaction search (leave blank to ignore a filter):");
 
         LocalDate startDate = parseOptionalDate("Enter start date (yyyy-MM-dd): ");
