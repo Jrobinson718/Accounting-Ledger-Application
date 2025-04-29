@@ -41,6 +41,38 @@ public class Transaction {
         return String.format("%s|%s|%s|%.2f", dateTime.format(formatter), description, vendor, amount);
     }
 
+    public String toDisplayString() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String formattedDateTime = dateTime.format(formatter);
+
+        int dateTimeWidth = 21;
+        int descWidth = 40;
+        int vendorWidth = 30;
+        int amountWidth = 15;
+
+        String displayDesc = description;
+        if (displayDesc == null) {
+            displayDesc = "";
+        }
+        if (displayDesc.length() > descWidth) {
+            displayDesc = displayDesc.substring(0, descWidth);
+
+        }
+
+        String displayVendor = vendor;
+        if (displayVendor == null) {
+            displayVendor = "";
+        }
+        if (displayVendor.length() > vendorWidth){
+            displayVendor = displayVendor.substring(0, vendorWidth);
+        }
+
+        String formattedString = String.format("%%-%ds %%-%ds %%-%ds %%%d.2f",
+                dateTimeWidth, descWidth, vendorWidth, amountWidth);
+
+        return String.format(formattedString, formattedDateTime, displayDesc, displayVendor, amount);
+    }
+
     // Method to get a transaction object from a string
     public static Transaction parsedTransaction(String transactionString) {
         String[] parts = transactionString.split("\\|"); // Splits at | delimiter
