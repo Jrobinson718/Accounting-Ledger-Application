@@ -190,28 +190,31 @@ public class FinancialTransactionsApp {
     // Includes all transactions from the start of the month to the current day
     private static void displayMonthToDate() throws IOException {
         LocalDate today = LocalDate.now();
-        LocalDate startOfMonth = today.withDayOfMonth(1);
-        List<Transaction> transactions = transactionList.getTransactions(startOfMonth, today);
-        double total = transactionList.getTotalTransactions(startOfMonth, today);
+        LocalDate[] range = DateUtils.getMonthToDateRange(today);
+        LocalDate startDate = range[0];
+        LocalDate endDate = range[1];
+        List<Transaction> transactions = transactionList.getTransactions(startDate, endDate);
+        double total = transactionList.getTotalTransactions(startDate, endDate);
 
-        String title = "\nMonth to date report (" + startOfMonth.format(dateFormatter) + " - "
-                + today.format(dateFormatter) + "):";
+        String title = "\nMonth to date report (" + startDate.format(dateFormatter) + " - "
+                + endDate.format(dateFormatter) + ")";
 
         DisplayUtils.printFormattedList(transactions, title);
-
         System.out.printf("Total: $%.2f%n", total);
     }
 
     // Displays all transactions from the previous month
     private static void displayPreviousMonth() throws IOException {
         LocalDate today = LocalDate.now();
-        LocalDate startOfLastMonth = today.minusMonths(1).withDayOfMonth(1);
-        LocalDate endOfLastMonth = today.minusMonths(1).withDayOfMonth(today.minusMonths(1).lengthOfMonth());
-        List<Transaction> transactions = transactionList.getTransactions(startOfLastMonth, endOfLastMonth);
-        double total = transactionList.getTotalTransactions(startOfLastMonth, endOfLastMonth);
+        LocalDate[] range = DateUtils.getPreviousMonthRange(today);
+        LocalDate startDate = range[0];
+        LocalDate endDate = range[1];
 
-        String title = "\nPrevious month's report (" + startOfLastMonth.format(dateFormatter) + " - "
-                + endOfLastMonth.format(dateFormatter);
+        List<Transaction> transactions = transactionList.getTransactions(startDate, endDate);
+        double total = transactionList.getTotalTransactions(startDate, endDate);
+
+        String title = "\nPrevious month's report (" + startDate.format(dateFormatter) + " - "
+                + endDate.format(dateFormatter);
 
         DisplayUtils.printFormattedList(transactions, title);
         System.out.printf("Total: $%.2f%n", total);
@@ -221,15 +224,17 @@ public class FinancialTransactionsApp {
     // Includes all transactions from the start of the year to the current day
     private static void displayYearToDate() throws IOException {
         LocalDate today = LocalDate.now();
-        LocalDate startOfYear = today.withDayOfYear(1);
-        List<Transaction> transactions = transactionList.getTransactions(startOfYear, today);
-        double total = transactionList.getTotalTransactions(startOfYear, today);
+        LocalDate[] range = DateUtils.getYearToDateRange(today);
+        LocalDate startDate = range[0];
+        LocalDate endDate = range[1];
 
-        String title = "\nYear to date report (" + startOfYear.format(dateFormatter)
-                + " - " + today.format(dateFormatter) + "):";
+        List<Transaction> transactions = transactionList.getTransactions(startDate, endDate);
+        double total = transactionList.getTotalTransactions(startDate, endDate);
+
+        String title = "\nYear to date report (" + startDate.format(dateFormatter)
+                + " - " + endDate.format(dateFormatter) + ")";
 
         DisplayUtils.printFormattedList(transactions, title);
-
         System.out.printf("Total: $%.2f%n", total);
     }
 
@@ -237,13 +242,15 @@ public class FinancialTransactionsApp {
     private static void displayPreviousYear() throws IOException {
 
         LocalDate today = LocalDate.now();
-        LocalDate startOfPreviousYear = today.minusYears(1).withDayOfYear(1);
-        LocalDate endOfPreviousYear = today.minusYears(1).withDayOfYear(today.minusYears(1).lengthOfYear());
-        List<Transaction> transactions = transactionList.getTransactions(startOfPreviousYear, endOfPreviousYear);
-        double total = transactionList.getTotalTransactions(startOfPreviousYear, endOfPreviousYear);
+        LocalDate[] range = DateUtils.getPrevYearRange(today);
+        LocalDate startDate = range[0];
+        LocalDate endDate = range[1];
 
-        String title = "\nPrevious year report (" + startOfPreviousYear.format(dateFormatter) + " - "
-                + endOfPreviousYear.format(dateFormatter) + "):";
+        List<Transaction> transactions = transactionList.getTransactions(startDate, endDate);
+        double total = transactionList.getTotalTransactions(startDate, endDate);
+
+        String title = "\nPrevious year report (" + startDate.format(dateFormatter) + " - "
+                + endDate.format(dateFormatter) + ")";
 
         DisplayUtils.printFormattedList(transactions, title);
         System.out.printf("Total: $%.2f%n", total);
