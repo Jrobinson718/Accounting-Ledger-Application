@@ -18,6 +18,7 @@ public class FinancialTransactionsApp {
     private static TransactionList transactionList = new TransactionList();
     private static Console console = new Console();
 
+    //   === Main application methods ===
 
     // Application start point
     // Loads data and starts main loop, also handle errors
@@ -150,7 +151,7 @@ public class FinancialTransactionsApp {
             amount = -Math.abs(amount);
 
         } else {
-            amount = -Math.abs(amount);
+            amount = Math.abs(amount);
         }
         Transaction transaction = new Transaction(now, description, vendor, amount);
         transactionList.addTransaction(transaction);
@@ -196,7 +197,7 @@ public class FinancialTransactionsApp {
         List<Transaction> transactions = transactionList.getTransactions(startDate, endDate);
         double total = transactionList.getTotalTransactions(startDate, endDate);
 
-        String title = "\nMonth to date report (" + startDate.format(dateFormatter) + " - "
+        String title = "Month to date report (" + startDate.format(dateFormatter) + " - "
                 + endDate.format(dateFormatter) + ")";
 
         DisplayUtils.printFormattedList(transactions, title);
@@ -213,7 +214,7 @@ public class FinancialTransactionsApp {
         List<Transaction> transactions = transactionList.getTransactions(startDate, endDate);
         double total = transactionList.getTotalTransactions(startDate, endDate);
 
-        String title = "\nPrevious month's report (" + startDate.format(dateFormatter) + " - "
+        String title = "Previous month's report (" + startDate.format(dateFormatter) + " - "
                 + endDate.format(dateFormatter);
 
         DisplayUtils.printFormattedList(transactions, title);
@@ -231,7 +232,7 @@ public class FinancialTransactionsApp {
         List<Transaction> transactions = transactionList.getTransactions(startDate, endDate);
         double total = transactionList.getTotalTransactions(startDate, endDate);
 
-        String title = "\nYear to date report (" + startDate.format(dateFormatter)
+        String title = "Year to date report (" + startDate.format(dateFormatter)
                 + " - " + endDate.format(dateFormatter) + ")";
 
         DisplayUtils.printFormattedList(transactions, title);
@@ -249,7 +250,7 @@ public class FinancialTransactionsApp {
         List<Transaction> transactions = transactionList.getTransactions(startDate, endDate);
         double total = transactionList.getTotalTransactions(startDate, endDate);
 
-        String title = "\nPrevious year report (" + startDate.format(dateFormatter) + " - "
+        String title = "Previous year report (" + startDate.format(dateFormatter) + " - "
                 + endDate.format(dateFormatter) + ")";
 
         DisplayUtils.printFormattedList(transactions, title);
@@ -266,7 +267,7 @@ public class FinancialTransactionsApp {
         DisplayUtils.printFormattedList(transactions, title);
     }
 
-    //   === Custom search methods
+    //   === Custom search methods ===
     // Created a helper method that prompts the user for a date (optional) and parses it
     // Loops until given a valid date or a blank input
     private static LocalDate parseOptionalDate(String prompt) {
