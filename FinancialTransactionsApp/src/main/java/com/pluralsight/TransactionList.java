@@ -85,6 +85,7 @@ public class TransactionList {
         }
     }
 
+    // Searches for transactions based off of the params (startDate, endDate, description and vendor) which can be skipped if the user chooses for a broader search
     public List<Transaction> searchTransactions(LocalDate startDate, LocalDate endDate, String description, String vendor){
         List<Transaction> results = new ArrayList<>();
         String lowerDescription = (description != null && !description.isBlank()) ? description.toLowerCase() : null;
